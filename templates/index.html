@@ -1,0 +1,419 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>jQuery UI Sortable - Portlets</title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+  <link rel="stylesheet" href="//code.jquery.com/ui/1.13.1/themes/base/jquery-ui.css">
+  <link rel="stylesheet" href="/resources/demos/style.css">
+  <!-- CSS Stylesheets -->
+  <!-- <link rel="stylesheet" href="static/css/styles.css"> -->
+
+  <!-- Font Awesome -->
+  <script defer src="https://use.fontawesome.com/releases/v5.0.7/js/all.js"></script>
+
+  <!-- Bootstrap Scripts -->
+  <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+  <style>
+  .heading{
+    top: 0;
+    width: 100%;
+  }
+  .nav-item {
+    padding: 0 18px;
+  }
+  body {
+    min-width: 520px;
+    background-color: #E3CAA5;
+  }
+  .content{
+    padding-left: 20px;
+  }
+  .column {
+    width: 410px;
+    float: left;
+    padding-bottom: 10px;
+    padding-top: 10px;
+    background-color: #E3CAA5;
+  }
+  .portlet {
+    background-color:#CEAB93;
+    margin-left: 6px;
+    margin-top: 6px;
+    margin-right: 6px;
+    padding: 0.3em;
+  }
+  .portlet-header {
+    text-align:center;
+    background-color:white;
+    padding: 0.2em 0.3em;
+    margin-bottom: 0.0em;
+    position: relative;
+  }
+  .portlet-toggle {
+    position: absolute;
+    top: 50%;
+    right: 0;
+    margin-top: -8px;
+  }
+  .portlet-content {
+    padding-left: 0.0em;
+  }
+  .portlet-placeholder {
+    border: 1px dotted black;
+    margin-top: 6px;
+    margin-left: 6px;
+    margin-right: 6px;
+    height: 50px;
+  }
+  .icon{
+    height:20px;
+    width: 20px;
+    padding-bottom:2px;
+  }
+  .users{
+    width: 60px;
+    float: left;
+    text-align:center;
+    background-color:#CEAB93;
+  }
+  .times{
+    height:20px;
+    width: 323px;
+    text-align:center;
+    background-color:#CEAB93;
+  }
+  .bloc{
+    height:150px;
+    width: 323px;
+    background-color:#CEAB93;
+    float: left;
+    padding: 0.4em;
+  }
+  .desc{
+    height:120px;
+  }
+  </style>
+  <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
+  <script src="https://code.jquery.com/ui/1.13.1/jquery-ui.js"></script>
+  <script>
+
+  $( function() {
+    $( ".column" ).sortable({
+      connectWith: ".column",
+      handle: ".portlet-header",
+      cancel: ".portlet-toggle",
+      placeholder: "portlet-placeholder ui-corner-all",
+      stop: function(event, ui) {
+                    var postData = ui.position;
+                    var itm = ui.item.attr('id');
+                    var col = ui.item.parent().attr('id');
+                    if(col == 1){
+                    $("#1 .portlet .portlet-header").css("background-color", "white");
+                    }
+                    else if(col == 2){
+                    $("#2 .portlet .portlet-header").css("background-color", "#FFF89A");
+                    }
+                    else{
+                    $("#3 .portlet .portlet-header").css("background-color", "#9ADCFF");
+                    }
+                    postData.id = itm
+                    postData.column = col
+                    $.ajax({
+                        type: 'POST',
+                        contentType: 'application/json',
+                        data: JSON.stringify(postData),
+                        dataType: 'json',
+                        url: '/post'
+                    });
+                }
+    });
+
+
+    $( ".portlet" )
+      .addClass( "ui-widget ui-widget-content ui-helper-clearfix ui-corner-all" )
+      .find( ".portlet-header" )
+        .addClass( "ui-widget-header ui-corner-all" )
+        .prepend( "<span class='ui-icon ui-icon-minusthick portlet-toggle'></span>");
+
+    $( ".portlet-toggle" ).on( "click", function() {
+      var icon = $( this );
+      icon.toggleClass( "ui-icon-minusthick ui-icon-plusthick" );
+      icon.closest( ".portlet" ).find( ".portlet-content" ).toggle();
+    });
+    jQuery(function(){
+    jQuery('.portlet-toggle').click();
+  });
+  } );
+  </script>
+</head>
+<body>
+  <nav class="heading navbar navbar-expand-lg navbar-dark" style="background-color: #2C3333;">
+
+    <a class="navbar-brand" href="#"><i class="fas fa-coffee"></i>  Todo List</a>
+
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo02">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarTogglerDemo02">
+
+      <ul class="navbar-nav navbar-dark ml-auto">
+        {% if logged_in %}
+        <li class="nav-item">
+          <a class="btn btn-success" href="{{url_for('save_position')}}" role="button">
+            <i class="fas fa-list-alt"></i>
+            Save
+          </a>
+        </li>
+        {% endif %}
+        {% if logged_in %}
+        <li class="nav-item">
+          <a class="nav-link" href="#footer" data-toggle="modal" data-target="#exampleModal">
+            <i class="fas fa-list-alt"></i>
+            Add Task
+          </a>
+        </li>
+        {% endif %}
+        {% if not logged_in %}
+        <li class="nav-item">
+        <a href="" class="nav-link" data-toggle="modal" data-target="#modalRegisterForm">
+          <i class="fas fa-user-plus"></i>
+          Join
+        </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#cta" data-toggle="modal" data-target="#modalLoginForm">
+            <i class="fas fa-sign-in-alt"></i>
+            Log In
+          </a>
+        </li>
+        {% endif %}
+        {% if logged_in %}
+        <li class="nav-item">
+          <a class="nav-link" href="{{url_for('logout')}}" >
+            <i class="fas fa-sign-in-alt"></i>
+            Log Out
+          </a>
+        </li>
+        {% endif %}
+      </ul>
+
+    </div>
+  </nav>
+  <!-- Modal -->
+  <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Add Task</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <form method="post">
+            <div class="form-group">
+              <label for="taskNameInput">Task Name:</label>
+              <input type="text" name="name" class="form-control" id="taskNameInput"required="true"  placeholder="Add task name...">
+            </div>
+            <div class="form-group">
+              <label for="exampleFormControlTextarea1">Descrition: </label>
+              <textarea class="form-control" name="description" id="exampleFormControlTextarea1" required="true" rows="3"></textarea>
+            </div>
+            <div class="form-group">
+              <label for="startDateInput">Start Date:</label>
+              <input type="text" name="start" class="form-control" id="startDateInput" required="true" placeholder="dd/mm/yyyy">
+            </div>
+            <div class="form-group">
+              <label for="EndDateInput">End Date:</label>
+              <input type="text" name="end" class="form-control" id="EndDateInput" required="true" placeholder="dd/mm/yyyy">
+            </div>
+            <div class="modal-footer">
+              <button type="submit" class="btn btn-primary">Save changes</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal fade" id="modalLoginForm" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">Sign in</h4>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <form method="post">
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <i class="fas fa-envelope prefix grey-text"></i>
+          <input name="loginEmail" type="email" id="defaultForm-email" class="form-control validate">
+          <label data-error="wrong" data-success="right" for="defaultForm-email">Your email</label>
+        </div>
+
+        <div class="md-form mb-4">
+          <i class="fas fa-lock prefix grey-text"></i>
+          <input name="loginPassword" type="password" id="defaultForm-pass" class="form-control validate">
+          <label data-error="wrong" data-success="right" for="defaultForm-pass">Your password</label>
+        </div>
+
+      </div>
+      <div class="modal-footer d-flex justify-content-center">
+        <button type="submit" class="btn btn-default">Login</button>
+      </div>
+      </form>
+    </div>
+  </div>
+  </div>
+  <div class="modal fade" id="modalRegisterForm" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header text-center">
+          <h4 class="modal-title w-100 font-weight-bold">Sign up</h4>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <form method="post">
+        <div class="modal-body mx-3">
+          <div class="md-form mb-5">
+            <i class="fas fa-user prefix grey-text"></i>
+            <input  name="signName" type="text" id="orangeForm-name" class="form-control validate">
+            <label data-error="wrong" data-success="right" for="orangeForm-name">Your name</label>
+          </div>
+          <div class="md-form mb-5">
+            <i class="fas fa-envelope prefix grey-text"></i>
+            <input name="signEmail" type="email" id="orangeForm-email" class="form-control validate">
+            <label data-error="wrong" data-success="right" for="orangeForm-email">Your email</label>
+          </div>
+          <div class="md-form mb-4">
+            <i class="fas fa-lock prefix grey-text"></i>
+            <input name="signPassword" type="password" id="orangeForm-pass" class="form-control validate">
+            <label data-error="wrong" data-success="right" for="orangeForm-pass">Your password</label>
+          </div>
+        </div>
+        <div class="modal-footer d-flex justify-content-center">
+          <button type="submit" class="btn btn-deep-orange">Sign up</button>
+        </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <section class="content">
+  <div class="column" id="1" >
+    <div style="text-align:center; background-color: white">
+      Todo
+    </div>
+    {% for task in tasks_column_1: %}
+    <div class="portlet" id="{{task.id}}">
+      <div class="portlet-header" style="background-color: white">{{task.name}}</div>
+      <div class="portlet-content">
+        <div>
+          <div class="bloc">
+            <div class="desc">
+              {{task.description}}
+            </div>
+            <div class="times">
+              <div style="float: left;">
+                start: {{task.start_date}}
+              </div>
+              <div style="float: right; padding-right:10px;">
+                End: {{task.end_date}}
+              </div>
+            </div>
+          </div>
+          <div class="users">
+            <a class="btn " href="#" role="button">
+              <i class="icon fas fa-plus-circle" ></i>
+            </a><br>
+            <i class="icon fas fa-user" ></i> <br>
+            <i class="icon fas fa-user" ></i><br>
+            <i class="icon fas fa-user" ></i>
+          </div>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  <div class="column" id="2">
+    <div style="text-align:center;background-color: #FFF89A">
+      On Doing...
+    </div>
+    {% for task2 in tasks_column_2: %}
+    <div class="portlet" id="{{task2.id}}">
+      <div class="portlet-header" style="background-color: #FFF89A">{{task2.name}}</div>
+      <div class="portlet-content">
+        <div>
+          <div class="bloc">
+            <div class="desc">
+              {{task2.description}}
+            </div>
+            <div class="times">
+              <div style="float: left;">
+                start: {{task2.start_date}}
+              </div>
+              <div style="float: right; padding-right:10px;">
+                End: {{task2.end_date}}
+              </div>
+            </div>
+          </div>
+          <div class="users">
+            <a class="btn " href="#" role="button">
+              <i class="icon fas fa-plus-circle" ></i>
+            </a><br>
+            <i class="icon fas fa-user" ></i> <br>
+            <i class="icon fas fa-user" ></i><br>
+            <i class="icon fas fa-user" ></i>
+          </div>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  <div class="column" id="3">
+    <div style="text-align:center;background-color: #9ADCFF">
+      Done!
+    </div>
+    {% for task3 in tasks_column_3: %}
+    <div class="portlet" id="{{task3.id}}">
+      <div class="portlet-header" style="background-color: #9ADCFF">{{task3.name}}</div>
+      <div class="portlet-content">
+        <div>
+          <div class="bloc">
+            <div class="desc">
+              {{task3.description}}
+            </div>
+            <div class="times">
+              <div style="float: left;">
+                start: {{task3.start_date}}
+              </div>
+              <div style="float: right; padding-right:10px;">
+                End: {{task3.end_date}}
+              </div>
+            </div>
+          </div>
+          <div class="users">
+            <a class="btn " href="#" role="button">
+              <i class="icon fas fa-plus-circle" ></i>
+            </a><br>
+            <i class="icon fas fa-user" ></i> <br>
+            <i class="icon fas fa-user" ></i><br>
+            <i class="icon fas fa-user" ></i>
+          </div>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</section>
+
+</body>
+</html>
