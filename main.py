@@ -79,9 +79,11 @@ def home():
                 if not user:
                     # User already exists
                     flash("that email do not exist, please try again.!")
+                    print("that email do not exist, please try again.!")
                 # Check stored password hash against entered password hashed.
                 elif not check_password_hash(user.password, response["loginPassword"]):
                     flash('Password incorrect, please try again.')
+                    print("Password incorrect, please try again.!")
                 else:
                     login_user(user)
             else:
